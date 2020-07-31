@@ -20,5 +20,5 @@ export default class FotoService {
     return this._resource
         .get({ id: id })
         .then(res => res.json());
-}
+  }
 }
