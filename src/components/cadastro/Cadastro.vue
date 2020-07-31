@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1 class="centralizado">Cadastro</h1>
-    <h2 class="centralizado">{{ foto.titulo }}</h2>
-
+    <h1 v-if=(foto._id) class="centralizado">Alterar</h1>
+    <h1 v-else class="centralizado">Cadastrar</h1>
+    
     <form @submit.prevent="gravar()">
       <div class="controle">
         <label for="titulo">TÍTULO</label>
@@ -58,7 +58,10 @@ export default {
   methods: {
     gravar() {
       this.service.cadastra(this.foto).then(
-        () => (this.foto = new Foto()),
+        () => {
+          if (this.foto._id) this.$router.push({name: 'home'})
+          this.foto = new Foto()
+        },
         err => console.log(err)
       );
     }
