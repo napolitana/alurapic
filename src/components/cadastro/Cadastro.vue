@@ -1,17 +1,38 @@
 <template>
   <div>
-    <h1 v-if=(foto._id) class="centralizado">Alterar</h1>
+    <h1 v-if="foto._id" class="centralizado">Alterar</h1>
     <h1 v-else class="centralizado">Cadastrar</h1>
-    
+
     <form @submit.prevent="gravar()">
       <div class="controle">
         <label for="titulo">TÍTULO</label>
-        <input id="titulo" autocomplete="off" v-model.lazy="foto.titulo" />
+        <input
+          name="titulo"
+          data-vv-as="título"
+          id="titulo"
+          autocomplete="off"
+          v-model="foto.titulo"
+          v-validate
+          data-vv-rules="required|min:3|max:30"
+        />
+        <span class="erro" v-show="errors.has('titulo')">{{
+          errors.first("titulo")
+        }}</span>
       </div>
 
       <div class="controle">
         <label for="url">URL</label>
-        <input id="url" autocomplete="off" v-model.lazy="foto.url" />
+        <input
+          name="url"
+          id="url"
+          autocomplete="off"
+          v-model="foto.url"
+          v-validate
+          data-vv-rules="required"
+        />
+        <span class="erro" v-show="errors.has('url')">{{
+          errors.first("url")
+        }}</span>
         <div class="oi">
           <imagem-responsiva
             v-show="foto.url"
@@ -32,7 +53,9 @@
 
       <div class="centralizado">
         <botao rotulo="GRAVAR" tipo="submit" />
-        <router-link :to="{name: 'home'}"><botao rotulo="VOLTAR" tipo="button"/></router-link>
+        <router-link :to="{ name: 'home' }"
+          ><botao rotulo="VOLTAR" tipo="button"
+        /></router-link>
       </div>
     </form>
   </div>
@@ -57,22 +80,24 @@ export default {
   },
   methods: {
     gravar() {
-      this.service.cadastra(this.foto).then(
-        () => {
-          if (this.foto._id) this.$router.push({name: 'home'})
-          this.foto = new Foto()
-        },
-        err => console.log(err)
-      );
+      this.$validator.validateAll().then(success => {
+        if (success) {
+          this.service.cadastra(this.foto).then(
+            () => {
+              if (this.foto._id) this.$router.push({ name: "home" });
+              this.foto = new Foto();
+            },
+            err => console.log(err)
+          );
+        }
+      });
     }
   },
   created() {
     this.service = new FotoService(this.$resource);
-    if(this.id) {
-        this.service
-          .busca(this.id)
-          .then(foto => this.foto = foto);
-      }
+    if (this.id) {
+      this.service.busca(this.id).then(foto => (this.foto = foto));
+    }
   }
 };
 </script>
@@ -103,5 +128,11 @@ export default {
 
 .oi {
   width: 300px;
+}
+span {
+  display: block;
+}
+.erro {
+  color: red;
 }
 </style>
