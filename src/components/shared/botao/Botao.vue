@@ -5,6 +5,7 @@
     :class="estiloDoBotao"
     type="tipo"
   >
+    <slot />
     {{ rotulo }}
   </button>
 </template>
@@ -35,6 +36,8 @@ export default {
         if (confirm("Deseja remover a foto?")) {
           this.$emit("acao");
           return;
+        } else {
+          return;
         }
       }
       this.$emit("acao");
@@ -45,20 +48,20 @@ export default {
 
 <style scoped>
 .botao {
-  display: inline-block;
-  padding: 10px;
+  color: #a94442;
   border-radius: 3px;
-  margin: 10px;
-  font-size: 1.2em;
+  margin-left: 5px;
+  padding: 8px;
+  border: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .botao-perigo {
-  background: firebrick;
-  color: white;
+  color: firebrick;
 }
 
 .botao-padrao {
-  background: darkcyan;
-  color: white;
+  color: #3578d5;
 }
 </style>

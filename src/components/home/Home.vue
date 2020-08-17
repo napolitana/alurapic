@@ -1,36 +1,54 @@
 <template>
-  <div>
-    <h1>{{ titulo }}</h1>
-    <p class="centralizado">{{ mensagem }}</p>
-    <input
-      type="search"
-      class="filtro"
-      @input="filtro = $event.target.value"
-      placeholder="Digite o nome da imagem para filtrar"
-    />
+  <div class="flex-center">
+    <div class="content">
+      <div class="search flex-center">
+        <div id="input-search" class=" flex-center">
+          <p class="centralizado">{{ mensagem }}</p>
+          <input
+            type="search"
+            class="filtro"
+            @input="filtro = $event.target.value"
+            @focus="setFocus('#input-search')"
+            @blur="lostFocus('#input-search')"
+            placeholder="Pesquisar imagem"
+          />
+          <font-awesome-icon icon="search" />
+        </div>
+      </div>
 
-    <ul>
-      <li v-for="foto of fotosComFiltro">
-        <painel :titulo="foto.titulo">
-          <imagem-responsiva
-            :url="foto.url"
-            :titulo="foto.titulo"
-            v-transform:scale.animate="1.1"
-          />
-          <router-link :to="{name : 'alteracao', params: { id : foto._id}}"> 
-            <botao tipo="button" rotulo="Alterar" estilo="padrao" /> 
-          </router-link>
-          
-          <botao
-            tipo="button"
-            rotulo="Remover"
-            @acao="remover(foto)"
-            :confirma="true"
-            estilo="perigo"
-          />
-        </painel>
-      </li>
-    </ul>
+      <ul class="list">
+        <li v-for="foto of fotosComFiltro">
+          <painel :titulo="foto.titulo">
+            <div class="img">
+              <imagem-responsiva
+                :url="foto.url"
+                :titulo="foto.titulo"
+                v-transform:scale.animate="1.1"
+              />
+            </div>
+            <div class="buttons">
+              <router-link
+                :to="{ name: 'alteracao', params: { id: foto._id } }"
+              >
+                <botao tipo="button" rotulo="Alterar" estilo="padrao">
+                  <font-awesome-icon icon="edit" />
+                </botao>
+              </router-link>
+
+              <botao
+                tipo="button"
+                rotulo="Remover"
+                @acao="remover(foto)"
+                :confirma="true"
+                estilo="perigo"
+              >
+                <font-awesome-icon icon="trash-alt" />
+              </botao>
+            </div>
+          </painel>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -78,6 +96,12 @@ export default {
           this.mensagem = `Não foi possível remover a foto.`;
         }
       );
+    },
+    setFocus(selector) {
+      document.querySelector(selector).style.border = "1px solid #ff5f81";
+    },
+    lostFocus(selector) {
+      document.querySelector(selector).style.border = "1px solid #252525";
     }
   },
   created() {
@@ -91,23 +115,62 @@ export default {
 };
 </script>
 
-<style>
-h1,
-h2 {
-  font-weight: normal;
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Walter+Turncoat&display=swap");
+
+.flex-center {
+  display: flex;
+  justify-content: center;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
+h1,
+input,
+ul,
+li {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.search,
+.list {
+  margin-top: 30px;
+}
+
+.list {
+  max-width: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#input-search {
+  width: 255px;
+  border: 1px solid #cec4c4;
+  background-color: #fff;
+  align-items: center;
+}
+
+input:focus {
+  box-shadow: 0 0 0 0;
+  border: 0 none;
+  outline: 0;
+}
+
+input {
+  border: none;
+  padding: 5px 50px 5px 5px;
 }
 
 li {
-  display: inline-block;
-  margin: 0 10px;
+  margin: 0 10px 30px;
 }
 
-a {
-  color: #42b983;
+.img {
+  height: 150px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
 }
 </style>

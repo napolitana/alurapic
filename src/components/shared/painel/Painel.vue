@@ -21,21 +21,23 @@ export default {
 </script>
 
 <style>
+slot {
+  height: 100px;
+}
 .painel {
-  padding: 0 auto;
-  border: solid 2px grey;
-  display: inline-block;
-  margin: 5px;
+  background-color: #fff;
+  margin: 0 5px;
   width: 200px;
   height: 100%;
-  vertical-align: top;
+  box-shadow: 1px 2px 4px 0px #c3c3c3;
   text-align: center;
 }
 
 .painel .painel-titulo {
   text-align: center;
-  border-bottom: 2px solid grey;
-  background: lightblue;
+  font-weight: 500;
+  color: #fff;
+  background: #ff5f81;
   margin: 0 0 15px 0;
   padding: 10px;
 }
