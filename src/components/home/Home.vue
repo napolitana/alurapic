@@ -101,7 +101,7 @@ export default {
       document.querySelector(selector).style.border = "1px solid #ff5f81";
     },
     lostFocus(selector) {
-      document.querySelector(selector).style.border = "1px solid #252525";
+      document.querySelector(selector).style.border = "1px solid #cec4c4";
     }
   },
   created() {

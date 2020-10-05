@@ -12,10 +12,9 @@
 <style scoped>
 header {
   background-color: #252525;
-  padding: 18px 0;
+  padding: 16px 0;
   display: flex;
   justify-content: space-evenly;
-  border-bottom: 1px dashed #fff;
 }
 .logo {
   font-size: 2rem;

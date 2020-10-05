@@ -1,63 +1,67 @@
 <template>
   <div>
-    <h1 v-if="foto._id" class="centralizado">Alterar</h1>
-    <h1 v-else class="centralizado">Cadastrar</h1>
+    <div class="titulo">
+      <h1 v-if="foto._id" class="centralizado">Alterar</h1>
+      <h1 v-else class="centralizado">Cadastrar</h1>
+    </div>
 
-    <form @submit.prevent="gravar()">
-      <div class="controle">
-        <label for="titulo">TÍTULO</label>
-        <input
-          name="titulo"
-          data-vv-as="título"
-          id="titulo"
-          autocomplete="off"
-          v-model="foto.titulo"
-          v-validate
-          data-vv-rules="required|min:3|max:30"
-        />
-        <span class="erro" v-show="errors.has('titulo')">{{
-          errors.first("titulo")
-        }}</span>
-      </div>
-
-      <div class="controle">
-        <label for="url">URL</label>
-        <input
-          name="url"
-          id="url"
-          autocomplete="off"
-          v-model="foto.url"
-          v-validate
-          data-vv-rules="required"
-        />
-        <span class="erro" v-show="errors.has('url')">{{
-          errors.first("url")
-        }}</span>
-        <div class="oi">
-          <imagem-responsiva
-            v-show="foto.url"
-            :url="foto.url"
-            :titulo="foto.titulo"
+    <div class="cadastro">
+      <form class="form" @submit.prevent="gravar()">
+        <div class="campos">
+          <label for="titulo">Título</label>
+          <input
+            name="titulo"
+            data-vv-as="título"
+            id="titulo"
+            autocomplete="off"
+            v-model="foto.titulo"
+            v-validate
+            data-vv-rules="required|min:3|max:30"
           />
+          <span class="erro" v-show="errors.has('titulo')">{{
+            errors.first("titulo")
+          }}</span>
         </div>
-      </div>
 
-      <div class="controle">
-        <label for="descricao">DESCRIÇÃO</label>
-        <textarea
-          id="descricao"
-          autocomplete="off"
-          v-model="foto.descricao"
-        ></textarea>
-      </div>
+        <div class="campos">
+          <label for="url">URL</label>
+          <input
+            name="url"
+            id="url"
+            autocomplete="off"
+            v-model="foto.url"
+            v-validate
+            data-vv-rules="required"
+          />
+          <span class="erro" v-show="errors.has('url')">{{
+            errors.first("url")
+          }}</span>
+        </div>
 
-      <div class="centralizado">
-        <botao rotulo="GRAVAR" tipo="submit" />
-        <router-link :to="{ name: 'home' }"
-          ><botao rotulo="VOLTAR" tipo="button"
-        /></router-link>
+        <div class="campos">
+          <label for="descricao">Descrição</label>
+          <textarea
+            id="descricao"
+            autocomplete="off"
+            v-model="foto.descricao"
+          ></textarea>
+        </div>
+
+        <div class="centralizado">
+          <botao rotulo="GRAVAR" tipo="submit" />
+          <router-link :to="{ name: 'home' }"
+            ><botao rotulo="VOLTAR" tipo="button"
+          /></router-link>
+        </div>
+      </form>
+      <div v-if="foto.url" class="preview-img">
+        <imagem-responsiva
+          v-show="foto.url"
+          :url="foto.url"
+          :titulo="foto.titulo"
+        />
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -103,36 +107,84 @@ export default {
 </script>
 
 <style scoped>
-.centralizado {
-  text-align: center;
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.titulo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ff5f81;
+  letter-spacing: -0.04rem;
+  margin: 30px 0;
 }
 
 .centralizado {
   text-align: center;
 }
-.controle {
-  font-size: 1.2em;
-  margin-bottom: 20px;
+
+.cadastro {
+  display: flex;
+  justify-content: center;
 }
-.controle label {
+.form {
+  width: 100vh;
+  margin: auto;
+  margin: 0 4rem;
+  padding: 0 15px;
+}
+.form .campos {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.form .campos label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.form .campos input,
+.form .campos textarea {
   display: block;
-  font-weight: bold;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.controle label + input,
-.controle textarea {
-  width: 60%;
-  font-size: inherit;
-  border-radius: 5px;
+.form .campos input:focus,
+.form .campos textarea:focus {
+  outline: none;
+  border-color: #ff5f81;
 }
 
-.oi {
+.form .campos textarea {
+  height: auto;
+}
+
+.preview-img {
   width: 300px;
+  height: 300px;
 }
-span {
-  display: block;
+
+.preview-img img {
+  max-width: 100%;
+  height: auto;
 }
+
 .erro {
-  color: red;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #dc3545;
 }
 </style>
