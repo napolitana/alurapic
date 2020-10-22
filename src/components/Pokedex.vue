@@ -11,7 +11,7 @@
       />
       <div>
         <section class="pokemons">
-          <div v-for="(pokemon, index) in pokemons" :key="index">
+          <div v-for="(pokemon, index) in pokemons" :key="index" :id="index">
             <Pokemon
               :name="pokemon.name"
               :url="pokemon.url"
@@ -37,15 +37,15 @@
         v-on:click="changePage(pagination.page + 1)"
         v-if="pagination.page < pagination.total"
       />
-
-      <!-- <PokemonDetails
-          :id="pokemon.id"
-          :abilities="pokemon.abilities"
-          :height="pokemon.height"
-          :weight="pokemon.weight"
-          :stats="pokemon.stats"
-        /> -->
     </div>
+    <PokemonDetails
+      v-if="selected.select"
+      :id="pokemon.id"
+      :abilities="pokemon.abilities"
+      :height="pokemon.height"
+      :weight="pokemon.weight"
+      :stats="pokemon.stats"
+    />
   </div>
 </template>
 
@@ -100,6 +100,9 @@ export default {
       this.selected.id = pokemon.id;
       this.selected.select = true;
       this.pokemon = pokemon;
+
+      let element = document.querySelector(".details");
+      element.scrollIntoView({ behavior: "smooth" });
     },
     changePage(numberPage) {
       if (numberPage > this.pagination.page) {
@@ -140,6 +143,13 @@ export default {
           once: true
         });
       });
+    },
+    getOffset(el) {
+      const rect = el.getBoundingClientRect();
+      return {
+        left: rect.left + window.scrollX,
+        top: rect.top + window.scrollY
+      };
     }
   },
   watch: {
