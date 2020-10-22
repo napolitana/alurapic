@@ -1,46 +1,24 @@
 import Vue from "vue";
 import App from "./App.vue";
+
 import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faTrashAlt,
-  faEdit,
-  faSearch
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import VueResource from "vue-resource";
-import VueRouter from "vue-router";
-import { routes } from "./routes";
-import "./directives/Transform";
-import VeeValidade from "vee-validate";
-import msg from "./pt_BR";
-import "bootstrap/dist/css/bootstrap.css";
+
+import Axios from "axios";
+
 import "./assets/css/reset.css";
-import "./assets/css/styles.css";
+import "./assets/css/base.css";
 
-Vue.use(VueResource);
-Vue.http.options.root = "http://localhost:3000";
+Vue.prototype.$http = Axios;
 
-Vue.use(VueRouter);
-const router = new VueRouter({
-  routes: routes,
-  mode: "history"
-});
-
-Vue.use(VeeValidade, {
-  locale: "pt_BR",
-  dictionary: {
-    pt_BR: {
-      messages: msg
-    }
-  }
-});
-
-library.add([faTrashAlt, faEdit, faSearch]);
+library.add(faAngleRight, faAngleLeft);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
+Vue.config.productionTip = false;
+
 new Vue({
   el: "#app",
-  router: router,
   render: h => h(App)
 });
