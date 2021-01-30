@@ -55,7 +55,11 @@
             >{{ type }}</small
           >
         </div>
-        <img :src="pokemon.sprites.front_default" alt="pic" />
+        <img
+          :src="pokemon.sprites.front_default"
+          alt="pic"
+          style="objectFit: cover"
+        />
       </div>
     </div>
   </div>
@@ -90,7 +94,9 @@ export default {
       );
     },
     isSelected() {
-      return this.selected.id == this.pokemon.id ? true : false;
+      return this.selected.id == this.pokemon.id && this.selected.select
+        ? true
+        : false;
     }
   },
   methods: {
@@ -128,7 +134,6 @@ export default {
   cursor: pointer;
 }
 .pokemon p {
-  width: 200px;
   text-align: center;
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",

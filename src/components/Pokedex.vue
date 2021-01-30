@@ -1,51 +1,45 @@
 <template>
-  <div class="content">
-    <div class="title"><h1>Pokédex - Primeira geração</h1></div>
-    <div class="loader loader-pokeball is-active" v-if="loading"></div>
-    <div class="pokedex" v-else>
-      <font-awesome-icon
-        icon="angle-left"
-        style="cursor: pointer"
-        v-on:click="changePage(pagination.page - 1)"
-        v-if="pagination.page > 1"
-      />
-      <div>
-        <section class="pokemons">
-          <div v-for="(pokemon, index) in pokemons" :key="index" :id="index">
-            <Pokemon
-              :name="pokemon.name"
-              :url="pokemon.url"
-              :id="index"
-              :selected="selected"
-              v-on:select-pokemon="selectPokemon"
-            />
-          </div>
-        </section>
+  <div>
+    <div class="content">
+      <div class="title"><h1>Pokédex - First generation</h1></div>
+      <div class="loader loader-pokeball is-active" v-if="loading"></div>
+      <div class="pokedex" v-else>
+        <font-awesome-icon
+          icon="angle-left"
+          style="cursor: pointer"
+          v-on:click="changePage(pagination.page - 1)"
+          v-if="pagination.page > 1"
+        />
+        <div>
+          <section class="pokemons">
+            <div v-for="(pokemon, index) in pokemons" :key="index" :id="index">
+              <Pokemon
+                :name="pokemon.name"
+                :url="pokemon.url"
+                :id="index"
+                :selected="selected"
+                v-on:select-pokemon="selectPokemon"
+              />
+            </div>
+          </section>
 
-        <div class="pagination">
-          <div class="total">Total de pokemons {{ pagination.total }}</div>
-          <div class="page">
-            Pagina
+          <div class="pagination">
+            <div class="total">Total: {{ pagination.total }}</div>
+            <div class="page">
+              Page
 
-            {{ pagination.page }} de {{ pagination.pages }}
+              {{ pagination.page }} of {{ pagination.pages }}
+            </div>
           </div>
         </div>
+        <font-awesome-icon
+          icon="angle-right"
+          style="cursor: pointer"
+          v-on:click="changePage(pagination.page + 1)"
+          v-if="pagination.page < pagination.total"
+        />
       </div>
-      <font-awesome-icon
-        icon="angle-right"
-        style="cursor: pointer"
-        v-on:click="changePage(pagination.page + 1)"
-        v-if="pagination.page < pagination.total"
-      />
     </div>
-    <PokemonDetails
-      v-if="selected.select"
-      :id="pokemon.id"
-      :abilities="pokemon.abilities"
-      :height="pokemon.height"
-      :weight="pokemon.weight"
-      :stats="pokemon.stats"
-    />
   </div>
 </template>
 
@@ -53,10 +47,16 @@
 import Pokemon from "./Pokemon";
 import PokemonDetails from "./PokemonDetails";
 
+import Animations from "./../mixins/Animations";
+
 export default {
   components: {
     Pokemon,
     PokemonDetails
+  },
+  mixins: [Animations],
+  props: {
+    modal: Boolean
   },
   data() {
     return {
@@ -77,9 +77,8 @@ export default {
       pokemon: {}
     };
   },
-  created() {
-    this.loading = true;
-    setTimeout(
+  async created() {
+    await setTimeout(
       () =>
         this.$http
           .get("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0")
@@ -101,15 +100,19 @@ export default {
       this.selected.select = true;
       this.pokemon = pokemon;
 
-      let element = document.querySelector(".details");
-      element.scrollIntoView({ behavior: "smooth" });
+      this.$emit("select-pokemon", this.pokemon);
+
+      // let element = document.querySelector(".details");
+      // element.scrollIntoView({ behavior: "smooth" });
     },
     changePage(numberPage) {
-      if (numberPage > this.pagination.page) {
-        this.animateCSS(".pokemons", "fadeInRight");
-      } else {
-        this.animateCSS(".pokemons", "fadeInLeft");
-      }
+      // if (numberPage > this.pagination.page) {
+      //   this.animateCSS(".pokemons", "backOutRight");
+      // } else {
+      //   this.animateCSS(".pokemons", "backOutLeft");
+      // }
+      this.animateCSS(".pokemons", "fadeIn");
+
       this.pagination.page = numberPage;
 
       this.paginationFunction();
@@ -126,30 +129,6 @@ export default {
           .slice(this.pagination.perPage * (this.pagination.page - 1))
           .slice(0, this.pagination.perPage);
       }
-    },
-    animateCSS(element, animation, prefix = "animate__") {
-      new Promise((resolve, reject) => {
-        const animationName = `${prefix}${animation}`;
-        const node = document.querySelector(element);
-
-        node.classList.add(`${prefix}animated`, animationName);
-
-        function handleAnimationEnd() {
-          node.classList.remove(`${prefix}animated`, animationName);
-          resolve("Animation ended");
-        }
-
-        node.addEventListener("animationend", handleAnimationEnd, {
-          once: true
-        });
-      });
-    },
-    getOffset(el) {
-      const rect = el.getBoundingClientRect();
-      return {
-        left: rect.left + window.scrollX,
-        top: rect.top + window.scrollY
-      };
     }
   },
   watch: {
@@ -160,6 +139,12 @@ export default {
           : this.allPokemons
               .slice(this.pagination.perPage * (this.pagination.page - 1))
               .slice(0, this.pagination.perPage);
+    },
+    modal: function() {
+      if (!this.modal) {
+        this.selected.select = false;
+        this.selected.id = "";
+      }
     }
   }
 };
@@ -174,9 +159,6 @@ export default {
   opacity: 0;
 }
 .content {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
   margin-top: 3.5rem;
   max-width: 100%;
   min-height: 100vh;
@@ -206,6 +188,10 @@ h1 {
   margin-right: auto;
 }
 
+.pokedex > div {
+  width: 100%;
+}
+
 .search {
   height: 50px;
   background-color: #ed5564;
@@ -220,9 +206,8 @@ h1 {
 }
 
 .pokemons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
 .pagination {
